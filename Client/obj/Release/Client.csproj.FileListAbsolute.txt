@@ -1,0 +1,9 @@
+D:\C#\Чат\Client\Client\obj\Release\Client.Form1.resources
+D:\C#\Чат\Client\Client\obj\Release\Client.Properties.Resources.resources
+D:\C#\Чат\Client\Client\obj\Release\Client.csproj.GenerateResource.Cache
+D:\C#\Чат\Client\Client\obj\Release\Client.csprojResolveAssemblyReference.cache
+D:\C#\Чат\Client\Client\bin\Release\Secret Chat FSB.exe.config
+D:\C#\Чат\Client\Client\bin\Release\Secret Chat FSB.exe
+D:\C#\Чат\Client\Client\bin\Release\Secret Chat FSB.pdb
+D:\C#\Чат\Client\Client\obj\Release\Secret Chat FSB.exe
+D:\C#\Чат\Client\Client\obj\Release\Secret Chat FSB.pdb
