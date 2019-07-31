@@ -8,10 +8,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Net;
+
 using System.Net.Sockets;
 using System.Threading;
 using System.Resources;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace Client
 {
@@ -33,13 +35,13 @@ namespace Client
         {
             try
             {
-                //обновляем данные
+                //Обновляем данные
                 Properties.Settings.Default.Address = textBox3.Text;
                 Properties.Settings.Default.Port = textBox4.Text;
                 Properties.Settings.Default.Nick = textBox5.Text;
                 Properties.Settings.Default.Save();
 
-                // Соединяем сокет с удаленной точкой
+                //Соединяем сокет с удаленной точкой
                 server.Connect(IPAddress.Parse(textBox3.Text), Convert.ToInt32(textBox4.Text));
                 //server.Connect(ipEndPoint);
 
@@ -54,9 +56,8 @@ namespace Client
                 textBox3.Enabled = false;
                 textBox4.Enabled = false;
                 textBox5.Enabled = false;
-                byte[] message = Encoding.UTF8.GetBytes("!подключиться" + textBox5.Text);
-                //Отправляем данные через сокет
-                int bytesSent = server.Send(message);
+
+                Send("Подключиться", textBox5.Text);
             }
             catch (Exception ex)
             {
@@ -66,13 +67,42 @@ namespace Client
 
         private void button3_Click(object sender, EventArgs e)
         {
+            Send("Сообщение", textBox2.Text + "\r\n");
+            textBox2.Text = null;
+        }
+
+        static void Send(string commanda, string messageString)
+        {
+            byte[] messageBytes = Encoding.UTF8.GetBytes(messageString);
+
+            Packet packet = new Packet();
+            packet.commanda = commanda;
+            packet.data = messageBytes;
+
+            string packetString = JsonConvert.SerializeObject(packet);
+            byte[] packetBytes = Encoding.UTF8.GetBytes(packetString);
+
             try
             {
-                byte[] message = Encoding.UTF8.GetBytes(textBox2.Text + "\r\n");
+                server.Send(packetBytes);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\r\n" + ex.StackTrace);
+            }
+        }
 
-                // Отправляем данные через сокет
-                int bytesSent = server.Send(message);
-                textBox2.Text = null;
+        static void Send(string commanda)
+        {
+            Packet packet = new Packet();
+            packet.commanda = commanda;
+
+            string packetString = JsonConvert.SerializeObject(packet);
+            byte[] packetBytes = Encoding.UTF8.GetBytes(packetString);
+
+            try
+            {
+                server.Send(packetBytes);
             }
             catch (Exception ex)
             {
@@ -87,12 +117,129 @@ namespace Client
                 while (true)
                 {
                     byte[] ping = new byte[1] { 0 }; //Синхронизация
-                    string data = null;
-                    byte[] bytes = new byte[1024]; // Буфер для входящих данных
+                    string message;
 
                     // Получаем ответ от сервера
-                    int bytesRec = server.Receive(bytes);
-                    data = Encoding.UTF8.GetString(bytes, 0, bytesRec);
+                    Packet packet = GetPacket();
+
+                    switch (packet.commanda)
+                    {
+                        case "Сообщение":
+                            this.Invoke((MethodInvoker)delegate ()
+                            {
+                                message = Encoding.UTF8.GetString(packet.data);
+                                message = JsonConvert.DeserializeObject<string>(message);
+
+                                textBox1.Text += message;
+                                textBox1.SelectionStart = textBox1.TextLength;
+                                textBox1.ScrollToCaret();
+                                //Всплывающие уведомления
+                                if (this.WindowState == FormWindowState.Minimized)
+                                {
+                                    notifyIcon1.Visible = true;
+                                    notifyIcon1.Icon = SystemIcons.Application;
+                                    int max = message.Length;
+                                    int IndexSkobka = message.IndexOf("]");
+                                    int IndexDvoeto4ie = message.IndexOf("]") + message.Substring(IndexSkobka, max - IndexSkobka).IndexOf(":");
+                                    int DlinaMessage = max - IndexDvoeto4ie;
+                                    int DlinaNickName = max - (IndexSkobka + DlinaMessage + 3);
+                                    string NickName = message.Substring(IndexSkobka + 2, DlinaNickName);
+                                    string messageText = message.Substring(IndexDvoeto4ie + 2, DlinaMessage - 4);
+                                    notifyIcon1.ShowBalloonTip(10 * 1000,
+                                        NickName,
+                                        messageText,
+                                        System.Windows.Forms.ToolTipIcon.Info);
+                                }
+                            });
+                            break;
+                        case "Логины":
+                            this.Invoke((MethodInvoker)delegate ()
+                            {
+                                listBox1.Items.Clear();
+                            });
+
+                            message = Encoding.UTF8.GetString(packet.data);
+                            string[] loginsName = JsonConvert.DeserializeObject<string[]>(message);
+
+                            for (int i = 0; i < loginsName.Length; i++)
+                            {
+                                this.Invoke((MethodInvoker)delegate ()
+                                {
+                                    listBox1.Items.Add(loginsName[i]);
+                                });
+                            }
+
+                            Send("Синхронизация");
+                            //server.Send(ping);
+                            break;
+                        case "Файлы":
+                            this.Invoke((MethodInvoker)delegate ()
+                            {
+                                dataGridView1.Rows.Clear();
+                            });
+
+                            message = Encoding.UTF8.GetString(packet.data);
+                            FileInfoKratko[] fileInfos = JsonConvert.DeserializeObject<FileInfoKratko[]>(message);
+
+                            for (int i = 0; i < fileInfos.Length; i++)
+                            {
+                                this.Invoke((MethodInvoker)delegate ()
+                                {
+                                    dataGridView1.Rows.Add();
+                                    dataGridView1.Rows[i].Cells[0].Value = fileInfos[i].name;
+                                    dataGridView1.Rows[i].Cells[1].Value = fileInfos[i].size;
+                                });
+                            }
+                            break;
+                        case "Загрузить":
+                            string fileName = Encoding.UTF8.GetString(packet.data);
+                            Send("Синхронизация");
+
+                            FileStream stream = new FileStream(Directory.GetCurrentDirectory() + "\\" + fileName, FileMode.Create, FileAccess.Write);
+                            BinaryWriter f = new BinaryWriter(stream);
+                            byte[] buffer = new byte[8192]; //Буфер для файла
+                            byte[] bFSize = new byte[512]; //Размер файла
+
+                            int bytesiRec = server.Receive(bFSize); //Принимаем размер
+                            Send("Синхронизация");
+                            int fSize = Convert.ToInt32(Encoding.UTF8.GetString(bFSize, 0, bytesiRec));
+
+                            int processed = 0; //Байт принято
+                            while (processed < fSize) //Принимаем файл
+                            {
+                                if ((fSize - processed) < 8192)
+                                {
+                                    int bytesi = (fSize - processed);
+                                    byte[] buf = new byte[bytesi];
+                                    bytesi = server.Receive(buf);
+                                    f.Write(buf, 0, bytesi);
+                                }
+                                else
+                                {
+                                    int bytesi = server.Receive(buffer);
+                                    f.Write(buffer, 0, bytesi);
+                                }
+                                Send("Синхронизация");
+                                processed += 8192;
+                            }
+                            f.Close();
+                            stream.Close();
+                            MessageBox.Show("Файл загружен\r\nName: " + dataGridView1.Rows[dataGridView1.CurrentRow.Index].Cells[0].Value +
+                                "\r\nSize: " + dataGridView1.Rows[dataGridView1.CurrentRow.Index].Cells[1].Value + " байт", "Загрузка файла", MessageBoxButtons.OK);
+                            if (MessageBox.Show("Открыть папку с файлом?\r\nName: " + dataGridView1.Rows[dataGridView1.CurrentRow.Index].Cells[0].Value +
+                                "\r\nSize: " + dataGridView1.Rows[dataGridView1.CurrentRow.Index].Cells[1].Value + " байт", "Загрузка файла", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                            {
+                                System.Diagnostics.Process.Start(Directory.GetCurrentDirectory());
+                            }
+                            break;
+                        case "Синхронизация":
+                            //Тупо синхронизация
+                            break;
+                        default:
+                            break;
+                    }
+
+                    /*
                     switch (data)
                     {
                         case "!история\r\n":
@@ -223,6 +370,7 @@ namespace Client
                             }
                             break;
                     }
+                    */
                 }
                 //textBox1.Text += "\nОтвет \r\n" + 
             }
@@ -249,8 +397,7 @@ namespace Client
         {
             try
             {
-                byte[] message = Encoding.UTF8.GetBytes("!отключиться");
-                int bytesSent = server.Send(message);
+                Send("Отключиться");
                 server.Disconnect(false);
                 Environment.Exit(1);
             }
@@ -264,18 +411,8 @@ namespace Client
         {
             if (!e.Shift && e.KeyCode == Keys.Enter)
             {
-                try
-                {
-                    byte[] message = Encoding.UTF8.GetBytes(textBox2.Text);
-
-                    // Отправляем данные через сокет
-                    int bytesSent = server.Send(message);
-                    textBox2.Text = null;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message + "\r\n" + ex.StackTrace);
-                }
+                Send("Сообщение", textBox2.Text);
+                textBox2.Text = null;
             }
         }
 
@@ -298,7 +435,29 @@ namespace Client
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        static Packet GetPacket()
+        {
+            byte[] bytes = new byte[1024];
+            int bytesRec = server.Receive(bytes);
+            string data = Encoding.UTF8.GetString(bytes, 0, bytesRec);
+            Packet packet = JsonConvert.DeserializeObject<Packet>(data);
+
+            return packet;
+        }
+
+        static bool Sinhronizatiya()
+        {
+            if (GetPacket().commanda == "Синхронизация")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)  
         {
             try
             {
@@ -306,10 +465,14 @@ namespace Client
                 {
                     string fileName = openFileDialog1.FileName;
 
-                    byte[] ping = new byte[1] { 0 }; //Синхронизация
-                    byte[] message = Encoding.UTF8.GetBytes("!выгрузить" + Path.GetFileName(fileName));
-                    int bytesSent = server.Send(message);
-                    server.Receive(ping); // 1
+                    //byte[] ping = new byte[1] { 0 }; //Синхронизация
+                    Send("Выгрузить", Path.GetFileName(fileName));
+
+                    if (Sinhronizatiya())
+                    {
+                        return;
+                    }
+                    //server.Receive(ping); // 1
 
                     FileStream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read);
                     BinaryReader f = new BinaryReader(stream);
@@ -319,7 +482,12 @@ namespace Client
 
                     byte[] bFSize = Encoding.UTF8.GetBytes(Convert.ToString(fSize)); //Размер файла
                     server.Send(bFSize); //Передаем размер
-                    server.Receive(ping); // 2
+
+                    if (Sinhronizatiya())
+                    {
+                        return;
+                    }
+                    //server.Receive(ping); // 2
 
                     int processed = 0; //Байт передано
                     while (processed < fSize) //Передаем файл
@@ -337,7 +505,11 @@ namespace Client
                             server.Send(buffer);
                         }
 
-                        server.Receive(ping); // 3
+                        if (Sinhronizatiya())
+                        {
+                            return;
+                        }
+                        //server.Receive(ping); // 3
                                               /*
                                               if ((fSize / 100) * progressBar1.Value < processed)
                                               {
@@ -360,7 +532,8 @@ namespace Client
         {
             try
             {
-                textBox2.Text = listBox2.Items[listBox2.SelectedIndex].ToString();
+                string commanda = listBox2.Items[listBox2.SelectedIndex].ToString();
+                Send(commanda);
             }
             catch (Exception ex)
             {
@@ -368,16 +541,14 @@ namespace Client
             }
         }
 
-        private void dataGridView1_DoubleClick(object sender, EventArgs e)
+        private void dataGridView1_DoubleClick(object sender, EventArgs e)  //Переписать
         {
             try
             {
-                if (MessageBox.Show("Вы точно хотите загрузить в тайне от ФСБ файл?\r\nName: " + dataGridView1.Rows[dataGridView1.CurrentRow.Index].Cells[0].Value + 
+                if (MessageBox.Show("Вы точно хотите загрузить файл?\r\nИмя: " + dataGridView1.Rows[dataGridView1.CurrentRow.Index].Cells[0].Value + 
                     "\r\nSize: " + dataGridView1.Rows[dataGridView1.CurrentRow.Index].Cells[1].Value + " байт", "Загрузка файла", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    byte[] message = Encoding.UTF8.GetBytes("!загрузить" + dataGridView1.Rows[dataGridView1.CurrentRow.Index].Cells[0].Value + "\r\n");
-                    // Отправляем данные через сокет
-                    int bytesSent = server.Send(message);
+                    Send("Загрузить", dataGridView1.Rows[dataGridView1.CurrentRow.Index].Cells[0].Value.ToString());
                 }
             }
             catch (Exception ex)
