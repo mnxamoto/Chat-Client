@@ -7,9 +7,6 @@ D:\C#\Чат\Client\Client\bin\Release\Secret Chat FSB.exe
 D:\C#\Чат\Client\Client\bin\Release\Secret Chat FSB.pdb
 D:\C#\Чат\Client\Client\obj\Release\Secret Chat FSB.exe
 D:\C#\Чат\Client\Client\obj\Release\Secret Chat FSB.pdb
-C:\Репозитории\C#\Chat-Client\Client\bin\Release\Secret Chat FSB.exe.config
-C:\Репозитории\C#\Chat-Client\Client\bin\Release\Secret Chat FSB.exe
-C:\Репозитории\C#\Chat-Client\Client\bin\Release\Secret Chat FSB.pdb
 C:\Репозитории\C#\Chat-Client\Client\bin\Release\Newtonsoft.Json.dll
 C:\Репозитории\C#\Chat-Client\Client\bin\Release\Newtonsoft.Json.xml
 C:\Репозитории\C#\Chat-Client\Client\obj\Release\Client.csprojAssemblyReference.cache
@@ -18,5 +15,8 @@ C:\Репозитории\C#\Chat-Client\Client\obj\Release\Client.Properties.Re
 C:\Репозитории\C#\Chat-Client\Client\obj\Release\Client.csproj.GenerateResource.cache
 C:\Репозитории\C#\Chat-Client\Client\obj\Release\Client.csproj.CoreCompileInputs.cache
 C:\Репозитории\C#\Chat-Client\Client\obj\Release\Client.csproj.CopyComplete
-C:\Репозитории\C#\Chat-Client\Client\obj\Release\Secret Chat FSB.exe
-C:\Репозитории\C#\Chat-Client\Client\obj\Release\Secret Chat FSB.pdb
+C:\Репозитории\C#\Chat-Client\Client\bin\Release\Chat.exe.config
+C:\Репозитории\C#\Chat-Client\Client\bin\Release\Chat.exe
+C:\Репозитории\C#\Chat-Client\Client\bin\Release\Chat.pdb
+C:\Репозитории\C#\Chat-Client\Client\obj\Release\Chat.exe
+C:\Репозитории\C#\Chat-Client\Client\obj\Release\Chat.pdb

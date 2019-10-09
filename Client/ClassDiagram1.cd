@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Client.Ciphers.Kuznyechik">
+    <Position X="12.5" Y="6.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAEAAAgCAAAAAAEAAgAAAAAIgAAAAAEBSAgQA=</HashCode>
+      <FileName>Ciphers\Kuznyechik.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Client.Ciphers.Magma">
+    <Position X="9" Y="8.25" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAABAAABAAABAAAAAAAAAQAAQAAAAAAAAQAAAAAA=</HashCode>
+      <FileName>Ciphers\Magma.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Client.Ciphers.Stribog">
+    <Position X="15.5" Y="6.25" Width="2.75" />
+    <NestedTypes>
+      <Enum Name="Client.Ciphers.Stribog.lengthHash">
+        <TypeIdentifier>
+          <NewMemberFileName>Ciphers\Stribog.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAABAAAAQAAAABAAAAAAAAiKAAAAAgTAAAA=</HashCode>
+      <FileName>Ciphers\Stribog.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Client.Form1">
+    <Position X="3" Y="0.5" Width="4.75" />
+    <TypeIdentifier>
+      <HashCode>ASSJQAEQASAAAACYAFCEQIJiIEg4AAIAkHSoAQAAACI=</HashCode>
+      <FileName>Form1.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Magma" />
+      <Property Name="Kuznyechik" />
+      <Property Name="Stribog" />
+      <Property Name="Packet" />
+      <Property Name="FileInfoKratko" />
+      <Property Name="User" />
+      <Property Name="Settings" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Client.Packet">
+    <Position X="9" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAQACAAAAA=</HashCode>
+      <FileName>Packet.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Client.FileInfoKratko">
+    <Position X="9" Y="4.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Packet.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Client.Program">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Form1" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Client.User">
+    <Position X="9" Y="2.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAEAAQAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Client.Properties.Settings">
+    <Position X="12.5" Y="1.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAIAAACBABAAACAAAAAAAACAA=</HashCode>
+      <FileName>Settings.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

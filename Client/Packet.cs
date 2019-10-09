@@ -8,6 +8,7 @@ namespace Client
     class Packet
     {
         public string commanda;
+        public string cipher;
         public byte[] data;
     }
 
@@ -15,5 +16,11 @@ namespace Client
     {
         public string name;
         public long size;
+    }
+
+    class ClientInfo
+    {
+        public string name;
+        public byte[] key;
     }
 }

@@ -33,17 +33,20 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.textBox4 = new System.Windows.Forms.TextBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.button3 = new System.Windows.Forms.Button();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.button4 = new System.Windows.Forms.Button();
+            this.textBox6 = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.listBox2 = new System.Windows.Forms.ListBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.tableLayoutPanel1.SuspendLayout();
@@ -52,12 +55,11 @@
             // 
             // button1
             // 
-            this.tableLayoutPanel1.SetColumnSpan(this.button1, 2);
             this.button1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button1.Location = new System.Drawing.Point(736, 2);
+            this.button1.Location = new System.Drawing.Point(730, 2);
             this.button1.Margin = new System.Windows.Forms.Padding(2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(198, 21);
+            this.button1.Size = new System.Drawing.Size(96, 21);
             this.button1.TabIndex = 0;
             this.button1.Text = "Подключиться";
             this.button1.UseVisualStyleBackColor = true;
@@ -65,13 +67,13 @@
             // 
             // textBox2
             // 
-            this.tableLayoutPanel1.SetColumnSpan(this.textBox2, 3);
+            this.tableLayoutPanel1.SetColumnSpan(this.textBox2, 4);
             this.textBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.textBox2.Location = new System.Drawing.Point(3, 344);
             this.textBox2.Multiline = true;
             this.textBox2.Name = "textBox2";
-            this.tableLayoutPanel1.SetRowSpan(this.textBox2, 2);
-            this.textBox2.Size = new System.Drawing.Size(728, 84);
+            this.tableLayoutPanel1.SetRowSpan(this.textBox2, 3);
+            this.textBox2.Size = new System.Drawing.Size(722, 84);
             this.textBox2.TabIndex = 2;
             this.textBox2.KeyUp += new System.Windows.Forms.KeyEventHandler(this.textBox2_Up);
             // 
@@ -80,7 +82,7 @@
             this.textBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.textBox3.Location = new System.Drawing.Point(3, 3);
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(238, 20);
+            this.textBox3.Size = new System.Drawing.Size(176, 20);
             this.textBox3.TabIndex = 4;
             this.textBox3.Text = "192.168.0.100";
             this.textBox3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -88,32 +90,19 @@
             // textBox4
             // 
             this.textBox4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBox4.Location = new System.Drawing.Point(247, 3);
+            this.textBox4.Location = new System.Drawing.Point(185, 3);
             this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(239, 20);
+            this.textBox4.Size = new System.Drawing.Size(176, 20);
             this.textBox4.TabIndex = 5;
             this.textBox4.Text = "1001";
             this.textBox4.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // textBox1
-            // 
-            this.tableLayoutPanel1.SetColumnSpan(this.textBox1, 3);
-            this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBox1.Location = new System.Drawing.Point(3, 28);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.tableLayoutPanel1.SetRowSpan(this.textBox1, 2);
-            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox1.Size = new System.Drawing.Size(728, 310);
-            this.textBox1.TabIndex = 1;
-            // 
             // textBox5
             // 
             this.textBox5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBox5.Location = new System.Drawing.Point(492, 3);
+            this.textBox5.Location = new System.Drawing.Point(367, 3);
             this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(239, 20);
+            this.textBox5.Size = new System.Drawing.Size(176, 20);
             this.textBox5.TabIndex = 6;
             this.textBox5.Text = "moto";
             this.textBox5.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -122,9 +111,9 @@
             // 
             this.tableLayoutPanel1.SetColumnSpan(this.button3, 2);
             this.button3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button3.Location = new System.Drawing.Point(737, 344);
+            this.button3.Location = new System.Drawing.Point(731, 374);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(196, 39);
+            this.button3.Size = new System.Drawing.Size(202, 24);
             this.button3.TabIndex = 7;
             this.button3.Text = "Отправить сообщение";
             this.button3.UseVisualStyleBackColor = true;
@@ -134,7 +123,7 @@
             // 
             this.listBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(737, 186);
+            this.listBox1.Location = new System.Drawing.Point(731, 186);
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(94, 152);
             this.listBox1.TabIndex = 8;
@@ -142,53 +131,94 @@
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.ColumnCount = 5;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33332F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+            this.tableLayoutPanel1.ColumnCount = 6;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 101F));
-            this.tableLayoutPanel1.Controls.Add(this.button2, 3, 4);
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 108F));
+            this.tableLayoutPanel1.Controls.Add(this.button4, 5, 0);
+            this.tableLayoutPanel1.Controls.Add(this.textBox6, 3, 0);
+            this.tableLayoutPanel1.Controls.Add(this.button2, 4, 5);
             this.tableLayoutPanel1.Controls.Add(this.textBox3, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.button3, 3, 3);
-            this.tableLayoutPanel1.Controls.Add(this.listBox1, 3, 2);
+            this.tableLayoutPanel1.Controls.Add(this.button3, 4, 4);
+            this.tableLayoutPanel1.Controls.Add(this.listBox1, 4, 2);
             this.tableLayoutPanel1.Controls.Add(this.textBox2, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.textBox4, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.textBox5, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.button1, 3, 0);
+            this.tableLayoutPanel1.Controls.Add(this.button1, 4, 0);
             this.tableLayoutPanel1.Controls.Add(this.textBox1, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.progressBar1, 0, 5);
-            this.tableLayoutPanel1.Controls.Add(this.listBox2, 4, 2);
-            this.tableLayoutPanel1.Controls.Add(this.dataGridView1, 3, 1);
+            this.tableLayoutPanel1.Controls.Add(this.progressBar1, 0, 6);
+            this.tableLayoutPanel1.Controls.Add(this.listBox2, 5, 2);
+            this.tableLayoutPanel1.Controls.Add(this.dataGridView1, 4, 1);
+            this.tableLayoutPanel1.Controls.Add(this.comboBox1, 4, 3);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 6;
+            this.tableLayoutPanel1.RowCount = 7;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(936, 456);
             this.tableLayoutPanel1.TabIndex = 9;
             // 
+            // button4
+            // 
+            this.button4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.button4.Location = new System.Drawing.Point(830, 2);
+            this.button4.Margin = new System.Windows.Forms.Padding(2);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(104, 21);
+            this.button4.TabIndex = 15;
+            this.button4.Text = "Зарегистрироваться";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // textBox6
+            // 
+            this.textBox6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBox6.Location = new System.Drawing.Point(549, 3);
+            this.textBox6.Name = "textBox6";
+            this.textBox6.Size = new System.Drawing.Size(176, 20);
+            this.textBox6.TabIndex = 14;
+            this.textBox6.Text = "1234";
+            this.textBox6.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBox6.UseSystemPasswordChar = true;
+            // 
             // button2
             // 
             this.tableLayoutPanel1.SetColumnSpan(this.button2, 2);
             this.button2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button2.Location = new System.Drawing.Point(737, 389);
+            this.button2.Location = new System.Drawing.Point(731, 404);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(196, 39);
+            this.button2.Size = new System.Drawing.Size(202, 24);
             this.button2.TabIndex = 9;
             this.button2.Text = "Отправить файл";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // textBox1
+            // 
+            this.tableLayoutPanel1.SetColumnSpan(this.textBox1, 4);
+            this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBox1.Location = new System.Drawing.Point(3, 28);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
+            this.tableLayoutPanel1.SetRowSpan(this.textBox1, 2);
+            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.textBox1.Size = new System.Drawing.Size(722, 310);
+            this.textBox1.TabIndex = 1;
+            // 
             // progressBar1
             // 
-            this.tableLayoutPanel1.SetColumnSpan(this.progressBar1, 5);
+            this.tableLayoutPanel1.SetColumnSpan(this.progressBar1, 6);
             this.progressBar1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.progressBar1.Location = new System.Drawing.Point(3, 434);
             this.progressBar1.Name = "progressBar1";
@@ -201,9 +231,9 @@
             this.listBox2.FormattingEnabled = true;
             this.listBox2.Items.AddRange(new object[] {
             "История"});
-            this.listBox2.Location = new System.Drawing.Point(837, 186);
+            this.listBox2.Location = new System.Drawing.Point(831, 186);
             this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(96, 152);
+            this.listBox2.Size = new System.Drawing.Size(102, 152);
             this.listBox2.TabIndex = 11;
             this.listBox2.SelectedIndexChanged += new System.EventHandler(this.listBox2_SelectedIndexChanged);
             // 
@@ -220,11 +250,11 @@
             this.Column2});
             this.tableLayoutPanel1.SetColumnSpan(this.dataGridView1, 2);
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.Location = new System.Drawing.Point(737, 28);
+            this.dataGridView1.Location = new System.Drawing.Point(731, 28);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersVisible = false;
-            this.dataGridView1.Size = new System.Drawing.Size(196, 152);
+            this.dataGridView1.Size = new System.Drawing.Size(202, 152);
             this.dataGridView1.TabIndex = 12;
             this.dataGridView1.DoubleClick += new System.EventHandler(this.dataGridView1_DoubleClick);
             // 
@@ -243,6 +273,20 @@
             this.Column2.Name = "Column2";
             this.Column2.ReadOnly = true;
             this.Column2.Width = 85;
+            // 
+            // comboBox1
+            // 
+            this.tableLayoutPanel1.SetColumnSpan(this.comboBox1, 2);
+            this.comboBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "Нет",
+            "Кузнечик",
+            "Магма"});
+            this.comboBox1.Location = new System.Drawing.Point(731, 344);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(202, 21);
+            this.comboBox1.TabIndex = 13;
             // 
             // openFileDialog1
             // 
@@ -277,7 +321,6 @@
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.TextBox textBox5;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.ListBox listBox1;
@@ -290,6 +333,10 @@
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.TextBox textBox6;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Button button4;
     }
 }
 
