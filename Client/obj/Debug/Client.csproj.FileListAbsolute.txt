@@ -13,7 +13,6 @@ C:\Репозитории\C#\Chat-Client\Client\obj\Debug\Client.csprojAssemblyR
 C:\Репозитории\C#\Chat-Client\Client\obj\Debug\Client.Form1.resources
 C:\Репозитории\C#\Chat-Client\Client\obj\Debug\Client.Properties.Resources.resources
 C:\Репозитории\C#\Chat-Client\Client\obj\Debug\Client.csproj.GenerateResource.cache
-C:\Репозитории\C#\Chat-Client\Client\obj\Debug\Client.csproj.CoreCompileInputs.cache
 C:\Репозитории\C#\Chat-Client\Client\obj\Debug\Client.csproj.CopyComplete
 C:\Репозитории\C#\Chat-Client\Client\bin\Debug\Chat.exe.config
 C:\Репозитории\C#\Chat-Client\Client\bin\Debug\Chat.exe

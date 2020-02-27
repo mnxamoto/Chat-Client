@@ -9,6 +9,7 @@ namespace Client
     {
         public string commanda;
         public string cipher;
+        public long timeSend;
         public byte[] data;
     }
 

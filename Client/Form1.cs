@@ -14,6 +14,7 @@ using System.Threading;
 using System.Resources;
 using System.IO;
 using Newtonsoft.Json;
+using System.Security.Cryptography;
 
 using Client.Ciphers;
 
@@ -24,62 +25,6 @@ namespace Client
         public Form1()
         {
             InitializeComponent();
-        }
-
-        internal Magma Magma
-        {
-            get => default(Magma);
-            set
-            {
-            }
-        }
-
-        internal Kuznyechik Kuznyechik
-        {
-            get => default(Kuznyechik);
-            set
-            {
-            }
-        }
-
-        internal Stribog Stribog
-        {
-            get => default(Stribog);
-            set
-            {
-            }
-        }
-
-        internal Packet Packet
-        {
-            get => default(Packet);
-            set
-            {
-            }
-        }
-
-        internal FileInfoKratko FileInfoKratko
-        {
-            get => default(FileInfoKratko);
-            set
-            {
-            }
-        }
-
-        internal User User
-        {
-            get => default(User);
-            set
-            {
-            }
-        }
-
-        public Properties.Settings Settings
-        {
-            get => default(Properties.Settings);
-            set
-            {
-            }
         }
 
         /// <summary>
@@ -98,6 +43,8 @@ namespace Client
         /// Ключ
         /// </summary>
         static byte[] key = new byte[32];
+
+        DateTime dateTime;
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -226,24 +173,27 @@ namespace Client
                     }
 
                     dataBytes = Encoding.GetEncoding(866).GetBytes(data);
-                    result = new byte[dataBytes.Length];
+                    result = magma.Encode(dataBytes, key);
+                    break;
+                case "AES":
+                    sizeBlock = 16;
 
-                    for (int i = 0; i < dataBytes.Length; i += sizeBlock)
+                    Aes aes = Aes.Create();
+                    aes.Mode = CipherMode.ECB;
+                    aes.KeySize = 256;
+                    aes.BlockSize = sizeBlock * 8;
+                    aes.Key = key;
+                    aes.Padding = PaddingMode.Zeros;
+
+                    ICryptoTransform encryptor = aes.CreateEncryptor();
+
+                    while (data.Length % sizeBlock != 0)
                     {
-                        byte[] data8bytes = new byte[sizeBlock];
-
-                        for (int k = 0; k < sizeBlock; k++)
-                        {
-                            data8bytes[k] = dataBytes[k + i];
-                        }
-
-                        byte[] dataE8bytes = magma.Encode(data8bytes, key);
-
-                        for (int k = 0; k < sizeBlock; k++)
-                        {
-                            result[k + i] = dataE8bytes[k];
-                        }
+                        data += "┼";
                     }
+
+                    dataBytes = Encoding.GetEncoding(866).GetBytes(data);
+                    result = encryptor.TransformFinalBlock(dataBytes, 0, sizeBlock);
                     break;
                 default:
                     result = null;
@@ -300,26 +250,23 @@ namespace Client
                     break;
                 case "Магма":
                     Magma magma = new Magma();
-                    sizeBlock = 8;
-                    dataD = new byte[packet.data.Length];
+                    dataD = magma.Decode(packet.data, key);
+                    result = Encoding.GetEncoding(866).GetString(dataD);
+                    result = result.Replace("┼", "");
+                    break;
+                case "AES":
+                    sizeBlock = 16;
 
-                    for (int i = 0; i < packet.data.Length; i += sizeBlock)
-                    {
-                        byte[] data8bytes = new byte[sizeBlock];
+                    Aes aes = Aes.Create();
+                    aes.Mode = CipherMode.ECB;
+                    aes.KeySize = 256;
+                    aes.BlockSize = sizeBlock * 8;
+                    aes.Key = key;
+                    aes.Padding = PaddingMode.Zeros;
 
-                        for (int k = 0; k < sizeBlock; k++)
-                        {
-                            data8bytes[k] = packet.data[k + i];
-                        }
+                    ICryptoTransform decryptor = aes.CreateDecryptor();
 
-                        byte[] dataD8bytes = magma.Decode(data8bytes, key);
-
-                        for (int k = 0; k < sizeBlock; k++)
-                        {
-                            dataD[k + i] = dataD8bytes[k];
-                        }
-                    }
-
+                    dataD = decryptor.TransformFinalBlock(packet.data, 0, packet.data.Length);
                     result = Encoding.GetEncoding(866).GetString(dataD);
                     result = result.Replace("┼", "");
                     break;
@@ -340,11 +287,19 @@ namespace Client
         {
             string messageString = JsonConvert.SerializeObject(messageObject);
 
+            dateTime = DateTime.Now;
+
             Packet packet = Encrypt(messageString);
+
+            addRowInTable("Шифрование", packet);
+
             packet.commanda = commanda;
+            packet.timeSend = DateTime.Now.Ticks;
 
             string packetString = JsonConvert.SerializeObject(packet);
             byte[] packetBytes = Encoding.GetEncoding(866).GetBytes(packetString);
+
+            dateTime = DateTime.Now; //Начало отправки сообщениея
 
             try
             {
@@ -400,8 +355,15 @@ namespace Client
                             //Invoke - доступ к элементу, находящемуся в другом потоке (сама форма (Form1) находится в основном потоке)
                             this.Invoke((MethodInvoker)delegate ()
                             {
+                                addRowInTable("Отправка", packet); //Конец отправки сообщения
+
+                                dateTime = DateTime.Now;
+
                                 //Дешифруем данные из пакета
                                 message = Decrypt(packet);
+
+                                addRowInTable("Дешифрование", packet); //Конец дешифрования сообщения
+
                                 //Десериализуем данные в текст
                                 message = JsonConvert.DeserializeObject<string>(message);
 
@@ -559,9 +521,15 @@ namespace Client
             comboBox1.SelectedIndex = 0;
             comboBox1.Enabled = false;
 
-            Size sizeForm = Size;
-            sizeForm.Height += 100;
-            Size = sizeForm;
+            dataGridView2.Rows.Add(2);
+            dataGridView2.Rows[0].Cells[0].Value = "Кол. символов";
+            dataGridView2.Rows[1].Cells[0].Value = "Кол. байт";
+
+            dataGridView3.Rows.Add(3);
+            dataGridView3.Rows[0].Cells[0].Value = "Мин";
+            dataGridView3.Rows[1].Cells[0].Value = "Макс";
+            dataGridView3.Rows[2].Cells[0].Value = "Шаг";
+
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -753,6 +721,211 @@ namespace Client
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message + "\r\n" + ex.StackTrace);
+            }
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            int n = Convert.ToInt32(dataGridView2.Rows[0].Cells[1].Value);
+
+            string[] arraySimbols = new string[6];
+            arraySimbols[0] = "0123456789";
+            arraySimbols[1] = " ~!@#$%^&*()_+`-=:;'\"/?\\|№<>,.";
+            arraySimbols[2] = "qwertyuiopasdfghjklzxcvbnm";
+            arraySimbols[3] = "QWERTYUIOPASDFGHJKLZXCVBNM";
+            arraySimbols[4] = "йцукенгшщзфывапролджячсмитьбюё";
+            arraySimbols[5] = "ЙЦУКЕНГШЩЗФЫВАПРОЛДЖЯЧСМИТЬБЮЁ";
+
+            string simbols = "";
+
+            for (int i = 0; i < 6; i++)
+            {
+                if (checkedListBox1.GetItemChecked(i))
+                {
+                    simbols += arraySimbols[i];
+                }
+            }
+
+            string result = "";
+
+            for (int i = 0; i < n; i++)
+            {
+                result += simbols.Substring(random.Next(simbols.Length - 1), 1);
+            }
+
+            textBox8.Text = result;
+            dataGridView2.Rows[1].Cells[1].Value = Encoding.Default.GetByteCount(result);
+        }
+
+        Thread threadTest;
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            dataGridView5.Rows.Clear();
+
+            threadTest = new Thread(issledovanie1);
+
+            threadTest.Start();
+        }
+
+        private void issledovanie1() 
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                this.Invoke((MethodInvoker)delegate ()
+                {
+                    comboBox1.SelectedIndex = i;
+
+                    Send("Сообщение", textBox8.Text);
+                });
+
+                Thread.Sleep(1000);
+            }
+        }
+
+        private void addRowInTable(string sobitie, Packet packet)
+        {
+            //Эксперимент 1
+            string[] row = new string[3];
+            row[0] = packet.cipher;
+            row[1] = sobitie;
+
+            switch (sobitie)
+            {
+                case "Шифрование":
+                case "Дешифрование":
+                    DateTime dateTime2 = DateTime.Now;
+                    row[2] = (dateTime2 - dateTime).TotalMilliseconds.ToString();
+                    break;
+                case "Отправка":
+                    DateTime dateTimeSend = new DateTime(packet.timeSend);
+                    row[2] = (DateTime.Now - dateTimeSend).TotalMilliseconds.ToString();
+                    break;
+                default:
+                    break;
+            }
+
+            dataGridView5.Rows.Add(row);
+
+            //Эксперимент 2
+            DataGridView dataGridViewFormat = new DataGridView();
+
+            switch (comboBox1.SelectedItem.ToString())
+            {
+                case "Нет":
+                    dataGridViewFormat = dataGridView4;
+                    break;
+                case "Кузнечик":
+                    dataGridViewFormat = dataGridView6;
+                    break;
+                case "Магма":
+                    dataGridViewFormat = dataGridView7;
+                    break;
+                case "AES":
+                    dataGridViewFormat = dataGridView8;
+                    break;
+                default:
+                    break;
+            }
+
+            int countSimbols = packet.data.Length - 3;
+
+            switch (sobitie)
+            {
+                case "Шифрование":
+                    dataGridViewFormat.Rows.Add();
+                    dataGridViewFormat.Rows[dataGridViewFormat.Rows.Count - 1].Cells[0].Value = countSimbols.ToString();
+                    dataGridViewFormat.Rows[dataGridViewFormat.Rows.Count - 1].Cells[1].Value = (DateTime.Now - dateTime).TotalMilliseconds.ToString();
+                    break;
+                case "Отправка":
+                    DateTime dateTimeSend = new DateTime(packet.timeSend);
+                    dataGridViewFormat.Rows[dataGridViewFormat.Rows.Count - 1].Cells[2].Value = (DateTime.Now - dateTimeSend).TotalMilliseconds.ToString();
+                    break;
+                case "Дешифрование":
+                    dataGridViewFormat.Rows[dataGridViewFormat.Rows.Count - 1].Cells[3].Value = (DateTime.Now - dateTime).TotalMilliseconds.ToString();
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            dataGridView4.Rows.Clear();
+            dataGridView6.Rows.Clear();
+            dataGridView7.Rows.Clear();
+
+            threadTest = new Thread(issledovanie2);
+
+            threadTest.Start();
+        }
+
+        private void issledovanie2()
+        {
+            int min = 1;
+            int max = 100;
+            int step = 1;
+
+            this.Invoke((MethodInvoker)delegate ()
+            {
+                min = Convert.ToInt32(dataGridView3.Rows[0].Cells[1].Value);
+                max = Convert.ToInt32(dataGridView3.Rows[1].Cells[1].Value);
+                step = Convert.ToInt32(dataGridView3.Rows[2].Cells[1].Value);
+            });
+
+            string[] arraySimbols = new string[6];
+            arraySimbols[0] = "0123456789";
+            arraySimbols[1] = " ~!@#$%^&*()_+`-=:;'\"/?\\|№<>,.";
+            arraySimbols[2] = "qwertyuiopasdfghjklzxcvbnm";
+            arraySimbols[3] = "QWERTYUIOPASDFGHJKLZXCVBNM";
+            arraySimbols[4] = "йцукенгшщзфывапролджячсмитьбюё";
+            arraySimbols[5] = "ЙЦУКЕНГШЩЗФЫВАПРОЛДЖЯЧСМИТЬБЮЁ";
+
+            string simbols = "";
+
+            for (int i = 0; i < 6; i++)
+            {
+                this.Invoke((MethodInvoker)delegate ()
+                {
+                    if (checkedListBox2.GetItemChecked(i))
+                    {
+                        simbols += arraySimbols[i];
+                    }
+                });
+            }
+
+            string result = "";
+
+            for (int i = 0; i < min; i++)
+            {
+                result += simbols.Substring(random.Next(simbols.Length - 1), 1);
+            }
+
+            for (int i = min; i < max; i += step)
+            {
+                for (int k = 0; k < step; k++)
+                {
+                    result += simbols.Substring(random.Next(simbols.Length - 1), 1);
+                }
+
+                this.Invoke((MethodInvoker)delegate ()
+                {
+                    textBox10.Text = result;
+                });
+
+                for (int k = 0; k < 3; k++)
+                {
+                    this.Invoke((MethodInvoker)delegate ()
+                    {
+                        comboBox1.SelectedIndex = k;
+
+                        Send("Сообщение", result);
+                    });
+
+                    Thread.Sleep(1000);
+                }
+
             }
         }
     }
