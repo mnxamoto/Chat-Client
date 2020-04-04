@@ -278,6 +278,23 @@ namespace Client
             return result;
         }
 
+        private byte[] GetEDS(byte[] data)
+        {
+            byte[] EDS = new byte[data.Length];
+
+            for (int i = 0; i < data.Length / 32; i += 32)
+            {
+                byte[] iData = data.Skip(i).Take(32).ToArray();
+
+                Stribog stribog = new Stribog(Stribog.lengthHash.Length256);
+                byte[] iEDS = stribog.GetHash(iData);
+
+                EDS.Concat(iEDS);
+            }
+
+            return EDS;
+        }
+
         /// <summary>
         /// Отправляет данные на сервер
         /// </summary>
@@ -290,6 +307,7 @@ namespace Client
             dateTime = DateTime.Now;
 
             Packet packet = Encrypt(messageString);
+            packet.EDS = GetEDS(packet.data);
 
             addRowInTable("Шифрование", packet);
 
@@ -347,6 +365,12 @@ namespace Client
 
                     // Получаем пакет от сервера
                     Packet packet = GetPacket();
+
+                    //Проверка ЭЦП
+                    if ((packet.EDS != GetEDS(packet.data)) && false)
+                    {
+                        continue;
+                    }
 
                     //В зависимости от команды выполняется определённое действие
                     switch (packet.commanda)

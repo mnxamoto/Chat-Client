@@ -11,6 +11,7 @@ namespace Client
         public string cipher;
         public long timeSend;
         public byte[] data;
+        public byte[] EDS;
     }
 
     class FileInfoKratko
